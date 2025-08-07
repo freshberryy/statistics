@@ -1,7 +1,7 @@
-package com.demo.commentoStatistics.controller;
+package com.demo.comentoStatistic.controller;
 
-import com.demo.commentoStatistics.dto.YearCountDto;
-import com.demo.commentoStatistics.service.StatisticService;
+import com.demo.comentoStatistic.dto.YearCountDto;
+import com.demo.comentoStatistic.service.StatisticService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

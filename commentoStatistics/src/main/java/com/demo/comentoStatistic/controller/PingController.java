@@ -1,10 +1,9 @@
-package com.demo.commentoStatistics.controller;
+package com.demo.comentoStatistic.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
