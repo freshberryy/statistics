@@ -1,0 +1,13 @@
+package com.demo.commentoStatistics;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class CommentoStatisticsApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(CommentoStatisticsApplication.class, args);
+	}
+
+}
