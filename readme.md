@@ -15,10 +15,12 @@ group by 1;
 
 
 -- 3) 평균 하루 로그인 수
-select avg(a.cnt)
-from (select count(*) cnt
-	  from request_info
-	  where request_code = 'L') a; -- L: 로그인
+select avg(a.cnt) 로그인횟수
+from(select create_date 
+		  , request_code 
+		  , count(*) over(partition by create_date) as cnt 
+	 from request_info) a 
+where a.request_code = 'L'; -- L: 로그인
 	  
 -- 4) 휴일을 제외한 로그인 수
 -- 공휴일을 저장하는 테이블 hol 생성
