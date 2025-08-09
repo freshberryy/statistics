@@ -1,14 +1,14 @@
 ```sql
 -- 1)월별 접속자 수
 
-select substr(create_date ,6, 2) 월, count(*) 접속횟수
+select substr(create_date ,6, 2) 월, count(distinct user_id) 접속자수
 from request_info
 where request_code = 'S' -- S: 접속
 group by 1;
 
 
 -- 2)일자별 접속자 수
-select substr(create_date ,9) 일, count(*) 접속횟수
+select substr(create_date ,9) 일, count(distinct user_id) 접속자수
 from request_info
 where request_code = 'S' 
 group by 1;
