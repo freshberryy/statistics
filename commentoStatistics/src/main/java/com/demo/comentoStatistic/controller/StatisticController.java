@@ -1,33 +1,47 @@
 package com.demo.comentoStatistic.controller;
 
-import com.demo.comentoStatistic.dto.YearCountDto;
-import com.demo.comentoStatistic.service.StatisticService;
+import com.demo.comentoStatistic.dao.StatisticMapper;
+import com.demo.comentoStatistic.service.HolidayService;
+import com.demo.comentoStatistic.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
+@RequestMapping("/stats/count")
 public class StatisticController {
 
     @Autowired
-    StatisticService statisticService;
+    private StatisticMapper statisticMapper;
+    @Autowired
+    private HolidayService holidayService;
 
-
-    @RequestMapping(value="/api/v1/logins/{year}", produces = "application/json")
-    @ResponseBody
-    public ResponseEntity<YearCountDto> getYearLoginCount(@PathVariable("year") String year){
-
-        return ResponseEntity.ok(statisticService.getYearLogins(year));
+    @GetMapping("/session/month")
+    public List<SessionCountByMonthVO> getSessionCountByMonth() {
+        return statisticMapper.sessionCountByMonth();
     }
 
-    @RequestMapping(value="/api/v1/logins/{year}/{month}", produces = "application/json")
-    @ResponseBody
-    public Object getYearMonthLoginCount(@PathVariable("year") String year, @PathVariable("month") String month){
-
-        return ResponseEntity.ok(statisticService.getYearMonthLogins(year, month));
+    @GetMapping("/session/day")
+    public List<SessionCountByDayVO> getSessionCountByDay() {
+        return statisticMapper.sessionCountByDay();
     }
+
+    @GetMapping("/login/avg")
+    public LoginCountAvgByDayVO getLoginCountAvgByDay() {
+        return statisticMapper.loginCountAvgByDay();
+    }
+
+    @GetMapping("/login-except-holiday/{year}")
+    public int getLoginCountExceptHoliday(@PathVariable int year) {
+        List<String> holidays = holidayService.getHolidays(year);
+        return statisticMapper.loginCountExceptHoliday(holidays);
+    }
+
+    @GetMapping("/login/organ-month")
+    public List<LoginCountByOrganMonthVO> getLoginCountByOrganMonth(){
+        return statisticMapper.loginCountByOrganMonth();
+    }
+
 
 }

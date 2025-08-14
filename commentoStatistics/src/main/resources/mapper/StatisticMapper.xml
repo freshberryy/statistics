@@ -5,17 +5,58 @@
 
 <mapper namespace="com.demo.comentoStatistic.dao.StatisticMapper">
 
-    <select id="selectYearLogin" parameterType="string" resultType="YearCountDto">
-        select concat('20', #{year}) as year, count(*) as totCnt
-        from statistic.request_info ri
-        where left(ri.create_date, 2) = #{year};
+
+
+    <!-- 1. 월별 접속자 수-->
+    <select id="sessionCountByMonth" resultType="SessionCountByMonthVO">
+        select substr(create_date ,6, 2) month, count(distinct user_id) sessionCount
+        from request_info
+        where request_code = 'S'
+        group by substr(create_date ,6, 2);
     </select>
 
 
-    <select id="selectYearMonthLogin" parameterType="string" resultType="YearMonthCountDto">
-        select concat('20', #{yearMonth}) as yearMonth, count(*) as totCnt
-        from statistic.request_info ri
-        where left(ri.create_date, 4) = #{yearMonth};
+    <!-- 2. 일자별 접속자 수-->
+    <select id="sessionCountByDay" resultType="SessionCountByDayVO">
+        select substr(create_date ,9) day, count(distinct user_id) sessionCount
+        from request_info
+        where request_code = 'S'
+        group by substr(create_date ,9);
+    </select>
+
+    <!-- 3. 평균 하루 로그인 수-->
+    <select id="loginCountAvgByDay" resultType="LoginCountAvgByDayVO">
+        select avg(a.cnt) loginCount
+        from(select create_date
+        , request_code
+        , count(*) over(partition by create_date) as cnt
+        from request_info) a
+        where a.request_code = 'L';
+    </select>
+
+    <!-- 4. 휴일을 제외한 로그인 수-->
+
+    <select id="loginCountExceptHoliday" resultType="int">
+
+        select count(*)
+        from request_info a
+        where a.request_code = 'L'
+        <if test="holidays != null and holidays.size > 0">
+            and a.create_date not in
+            <foreach collection="holidays" item="hol" open="(" separator="," close=")">
+                #{hol}
+            </foreach>
+        </if>
+    </select>
+
+    <!-- 5. 부서별 월별 로그인 수-->
+    <select id="loginCountByOrganMonth" resultType="LoginCountByOrganMonthVO">
+
+        select b.hr_organ organ, substr(a.create_date, 6, 2) month, count(*) loginCount
+        from request_info a join user b
+        on a.user_id = b.user_id
+        where a.request_code = 'L'
+        group by b.hr_organ, substr(a.create_date, 6, 2);
     </select>
 
 </mapper>
